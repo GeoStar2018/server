@@ -1,12 +1,10 @@
-
-
 ### 创建数据集
 ```Java
 ConnectionInfo conninfo=new ConnectionInfo();   	
-conninfo.setAddress(address);
-conninfo.setProtocol(ConnectionProtocol.MYSQL);
-conninfo.setPassword(password);
-conninfo.setUsername(userName);
+conninfo.setAddress("172.15.103.42:10001:geoglobe ");
+conninfo.setProtocol(ConnectionProtocol. MONGO);
+conninfo.setPassword("data ");//密码
+conninfo.setUsername("data");//用户名
 Map<String, String> properties = new HashMap<String, String>();
 properties.put("PreConnectionNum", "10");
 properties.put("MaxConnectionNum", "10");
@@ -14,10 +12,11 @@ properties.put("TimeOut", "10");
 conninfo.setProperties(properties);
 DataSourceInfo dsinfo=new DataSourceInfo();
 dsinfo.setConnectionInfo(conninfo);
-dsinfo.setDataType(DataType.VECTOR_POLYGON);
-dsinfo.setSourceType(DataSourceType.MYSQL_SOURCE);
-dsinfo.setDataName("carete_polygon");
+dsinfo.setDataType(DataType.VECTOR_POLYGON);//矢量面
+dsinfo.setSourceType(DataSourceType. MONGO_SOURCE);
+dsinfo.setDataName("BOU2_4M_S ");
 
+//构建属性信息
 double x1 = 180,x2 = -180,y1 = 90,y2 = -90;
 GeoEnvelope env = new GeoEnvelope(x1,x2,y1,y2);
 AttributeInfo info = new AttributeInfo();
@@ -35,21 +34,21 @@ VectorDataSetInfo datasetInfo = new VectorDataSetInfo();
 datasetInfo.setGeometryType(GeometryType.POLYGON);
 datasetInfo.setEnvelope(env);
 datasetInfo.setAttributeInfo(info);
-int epsg = 4326;
-ICoordRefSystem crs = CoordRefSystem.newInstance(epsg);
-datasetInfo.setCoordRef(crs);
-MySQLDataBase odb=new MySQLDataBase();
-odb.setConnectionInfo(conninfo);
-GeoMySQLSpatialVectorDataSet ds=(GeoMySQLSpatialVectorDataSet)odb.createDataSet(dsinfo, datasetInfo);
+
+MongoDataBase mdb=new MongoDataBase();
+mdb.setConnectionInfo(conninfo);
+
+//创建新的数据集
+MongoVectorDataSet ds=( MongoVectorDataSet) mdb.createDataSet(dsinfo, datasetInfo);
 ```
 
 ### 获取数据集
 ```Java
 ConnectionInfo conninfo=new ConnectionInfo();   	
-conninfo.setAddress(address);
-conninfo.setProtocol(ConnectionProtocol.MYSQL);
-conninfo.setPassword(password);
-conninfo.setUsername(userName);
+conninfo.setAddress("172.15.103.42:10001:geoglobe");
+conninfo.setProtocol(ConnectionProtocol.MONGO);
+conninfo.setPassword("data");
+conninfo.setUsername("data");
 Map<String, String> properties = new HashMap<String, String>();
 properties.put("PreConnectionNum", "10");
 properties.put("MaxConnectionNum", "10");
@@ -58,33 +57,34 @@ conninfo.setProperties(properties);
 DataSourceInfo dsinfo=new DataSourceInfo();
 dsinfo.setConnectionInfo(conninfo);
 dsinfo.setDataType(DataType.VECTOR_POLYGON);
-dsinfo.setSourceType(DataSourceType.MYSQL_SOURCE);
-dsinfo.setDataName("polygon");
-MySQLDataBase mysqldatabase=new MySQLDataBase();
-DataBaseManager dbm= DataBaseManager.getInstance();
-mysqldatabase=(MySQLDataBase)dbm.getDataBaseInstance(conninfo);
-GeoMySQLSpatialVectorDataSet mysqldataset=(GeoMySQLSpatialVectorDataSet)mysqldatabase.getDataSet(dsinfo);
+dsinfo.setSourceType(DataSourceType.MONGO_SOURCE);
+dsinfo.setDataName("BOU2_4M_S");
+
+MongoDataBase mdb=new MongoDataBase();
+mdb.setConnectionInfo(conninfo);
+MongoVectorDataSet ds=(MongoVectorDataSet)mdb.getDataSet(dsinfo);
 ```
+
 ### 查询数据集信息
 ```Java
 ConnectionInfo conninfo=new ConnectionInfo();   	
-conninfo.setAddress(address);
-conninfo.setProtocol(ConnectionProtocol.MYSQL);
-conninfo.setPassword(password);
-conninfo.setUsername(userName);
-MySQLDataBase mdb=new MySQLDataBase();
+conninfo.setAddress("172.15.103.42:10001:geoglobe");
+conninfo.setProtocol(ConnectionProtocol.MONGO);
+conninfo.setPassword("data");
+conninfo.setUsername("data");
+MongoDataBase mdb=new MongoDataBase();
 mdb.setConnectionInfo(conninfo);
-List<DataSourceInfo> dataSourceInfoLise=
-mdb.queryDataSourceInfo(DataType. TILE_IMAGE,null);//查询瓦片数据集信息
+//查询矢量点
+List<DataSourceInfo> dataSourceInfoList = mdb.queryDataSourceInfo(DataType.VECTOR_POINT,null);
 ```
 
 ### 删除数据集
 ```Java
 ConnectionInfo conninfo=new ConnectionInfo();   	
-conninfo.setAddress(address);
-conninfo.setProtocol(ConnectionProtocol.MYSQL);
-conninfo.setPassword(password);
-conninfo.setUsername(userName);
+conninfo.setAddress("172.15.103.42:10001:geoglobe");
+conninfo.setProtocol(ConnectionProtocol.MONGO);
+conninfo.setPassword("data");
+conninfo.setUsername("data");
 Map<String, String> properties = new HashMap<String, String>();
 properties.put("PreConnectionNum", "10");
 properties.put("MaxConnectionNum", "10");
@@ -93,10 +93,10 @@ conninfo.setProperties(properties);
 DataSourceInfo dsinfo=new DataSourceInfo();
 dsinfo.setConnectionInfo(conninfo);
 dsinfo.setDataType(DataType.VECTOR_POLYGON);
-dsinfo.setSourceType(DataSourceType.MYSQL_SOURCE);
-dsinfo.setDataName("delete_polygon");
-MySQLDataBase mysqldatabase=new MySQLDataBase();
-DataBaseManager dbm= DataBaseManager.getInstance();
-mysqldatabase=(MySQLDataBase)dbm.getDataBaseInstance(conninfo);
-mysqldatabase.deleteDataSet(dsinfo);
+dsinfo.setSourceType(DataSourceType.MONGO_SOURCE);
+dsinfo.setDataName("BOU2_4M_S");
+
+MongoDataBase mdb=new MongoDataBase();
+mdb.setConnectionInfo(conninfo);
+MongoVectorDataSet ds=(MongoVectorDataSet)mdb.deleteDataSet(dsinfo);
 ```
